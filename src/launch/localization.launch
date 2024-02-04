@@ -1,0 +1,19 @@
+<launch>
+
+    <arg name="rviz" default="true" />
+    
+    <arg name="map" default="/home/yjq/CloudMerger-KITTI/result/result.pcd" />
+    <!-- loalization-->
+    <node pkg="localization" type="global_localization.py" name="global_localization" output="screen" />
+
+    <!-- transform  fusion-->
+    <node pkg="localization" type="transform_fusion.py" name="transform_fusion" output="screen" />
+
+    <!-- global map-->
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="map_publishe" output="screen" args="$(arg map) 5 _frame_id:=map cloud_pcd:=/map" />
+    
+    <group if="$(arg rviz)">
+      <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find localization)/rviz_cfg/localization.rviz" />
+    </group>
+
+</launch>
